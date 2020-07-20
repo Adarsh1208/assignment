@@ -1,32 +1,31 @@
-import React, { Component, useImperativeHandle } from "react";
-import App from "./App";
+import React from "react";
+
 
 class MemberDetails extends React.Component {
     
     constructor (props){
         super (props);
         this.state = {
-            selectedMember : this.props.id,
+            selectedMember : this.props.selectedId,
             memberDetails : {},
             teamMemberIds : []
         }
 
-        this.fetchingAPI = this.fetchingAPI.bind(this);
-        this.handleCLick = this.handleCLick.bind(this);
     }
 
      componentDidMount(){
-        fetchingAPI();
+        this.fetchingAPI();
     }
 
 
-    async function fetchingAPI() {
+    fetchingAPI = async () => {
         try{
-            const response = await fetch('https://yayjk.dev/api/members/'+ {this.state.selectedMember});
+            const response = await fetch('https://yayjk.dev/api/members/'+ this.state.selectedMember);
             const json = await response.json();
+            console.log(json)
             this.setState({
                 memberDetails : json.memberDetails,
-                teamMemberIds : json.teamMemberIds
+                teamMemberIds : json.teamMembersId
             }, () => console.log(this.state));
 
         }catch(error){
@@ -34,47 +33,56 @@ class MemberDetails extends React.Component {
         }
     }
     componentDidUpdate(prevProps, prevState){
-       if(prevState.selectedMember != this.state.selectedMember){
-           fetchingAPI();
+       if(prevState.selectedMember !== this.state.selectedMember){
+           this.fetchingAPI();
        }
     }
-
-    function handleCLick (e) {
+    handleClick = (id) =>{
         this.setState({
-            selectedMember : e.target.value
+            selectedMember : id
         })
     }
 
     render(){
+        let member = this.state.memberDetails
         return (
-            <div>
-                <ul>
-                    {this.state.memberDetails.map((key, i) => {
-                         return (<div>
-                             <li>key._id</li>
-                                <li>key.team</li>
-                                <li>key.name</li>
-                                <li>key.email</li>
-                                <li>key.phone</li>
-                                <li>key.position</li>
-                                <li>key.dateOfJoining</li>
-                         </div>)
-                    })}
-                </ul>
+            
+                <div>
+    
+                <div>
+                    <h2> Member details </h2>
+                    <br/>
+                    <span> Name :</span> <span>{member.name}</span>
+                    <br />
+                    <span>team :</span> <span>{member.team}</span>
+                    <br />
+                    <span> phone :</span> <span>{member.phone}</span>
+                    <br />
+                    <span> position :</span> <span>{member.position}</span>
+                    <br />
+
+                </div>
 
                 <ul>
-                    {this.state.teamMemberIds.map((value, index) => {
-                        return <li>
-                            <button onClick = {handleClick()} >{value._id}</button>
-                        </li>
-                    })}
+                    {
+                        this.state.teamMemberIds.map((values,index) => {
+                            return <li key={values._id}>
+                                <button onClick={() => this.handleClick(values._id)}>{values._id}</button>
+                            </li>
+                        })
+                    }
                 </ul>
-            </div>
+             
+
+                    </div>
+
+
         )
     }
 
 
 
 }
+
 
 export default MemberDetails;

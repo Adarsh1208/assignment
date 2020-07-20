@@ -9,10 +9,7 @@ class App extends Component{
         this.state = {
           isDataPopulated : false,
           memberids : []
-        }
-
-        this.callNextComponent = this.callNextComponent.bind(this);
-        
+        }        
       }
 
       async componentDidMount() {
@@ -27,27 +24,20 @@ class App extends Component{
         }
       }
 
-     
-  
+    
       
       render(){
-        const callNextComponent = function(e) {
-          this.setState({isDataPopulated : true});
-          let targetValue = e.target.value;
-          console.log(targetValue)
-        }
-        
-  
+        if(this.state.isDataPopulated) return <MemberDetails selectedId={this.state.selecteId}/>
         return(
           <div>
-          <ul>
-            {this.state.memberids.map((value, index) => {
-              return <li> 
-                 
-                 <button onClick = {callNextComponent.bind(this)}>{value._id}</button>
-              </li>
-            })
-          }
+            <ul>
+              {
+                this.state.memberids.map((value,index) => {
+                  return  <li  key={value._id}>
+                  <button onClick={()=>this.setState({isDataPopulated : true,selecteId : value._id})}>{value._id}</button>
+                  </li>
+                  })
+              }                    
           </ul>
         </div>
         )
